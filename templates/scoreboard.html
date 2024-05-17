@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3v3記分板</title>
+    <style>
+        body{
+            margin:0;
+            color: white;
+        }
+        .wrapper{
+            width: 100svw;
+            height: 100svh;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            background-color: #296f56;
+        }
+        .setter{
+            height: 80%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            gap: 20px;
+            overflow: auto;
+        }
+        .team{
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .label{
+            width: 100%;
+            height: max-content;
+            font-size: large;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            background-color: #1d8a90;
+        }
+        .score{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .server{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .score>.label{
+            font-size: medium;
+            background-color: black;
+        }
+        .display{
+            box-sizing: border-box;
+            font-size: medium;
+            height: 100%;
+            width: 100%;
+            background-color: #160f59;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5vh;
+        }
+
+        .display>div{
+            font-size: 20vh;
+        }
+        
+        .bottom{
+            width: 100%;
+            height: 20%;
+            display: block;
+            overflow: auto;
+        }
+        .bottom>div{
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="setter">
+            <div class="team">
+                <div class="label"><div>A隊</div></div>
+                <div class="score">
+                    <div class="label">分數</div>
+                    <div class="display A" id="aPlusButton">
+                        <div id="aScore"></div>
+                    </div>
+                </div>
+                <div class="server">
+                    <div class="label" id="aServerLabel">發球</div>
+                    <div class="display" id="aServer">test</div>
+                </div>
+            </div>
+            <div class="team">
+                <div class="label"><div>B隊</div></div>
+                <div class="score">
+                    <div class="label">分數</div>
+                    <div class="display B" id="bPlusButton">
+                        <div id="bScore"></div>
+                    </div>
+                </div>
+                <div class="server">
+                    <div class="label" id="bServerLabel">發球</div>
+                    <div class="display" id="bServer">test</div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom">
+            <div>
+                <button id="back_button">上一步</button>
+                <button id="setting_button">回到設定</button>
+            </div>
+            <div>點按分數加分</div>
+        </div>
+    </div>
+    <script>
+        // initialize url params first loaded
+        const queryString = window.location.search;
+        const numberParams = ['aScore', 'bScore', 'aServer', 'bServer', 'scoreTarget']
+        const booleanParams = ['deuce']
+        let urlParams = {};
+        new URLSearchParams(queryString).forEach((val, key)=>{ urlParams[key]=val; })
+        numberParams.forEach(numberParam=>{ urlParams[numberParam] = Number(urlParams[numberParam]); })
+        booleanParams.forEach(booleanParam=>{ urlParams[booleanParam] = Boolean(urlParams[booleanParam]); })
+
+        // load elements and setup button first loaded
+        const elementIds = [
+            'back_button', 'setting_button', 'aPlusButton', 'bPlusButton', 
+            'aScore', 'bScore', 'aServer', 'bServer',
+            'aServerLabel', 'bServerLabel'
+        ];
+        const displayIds = ['aScore', 'bScore']
+        const el = {}
+        elementIds.forEach(id=>{
+            el[id]=document.getElementById(id);
+        })
+        el['back_button'].addEventListener("click", ()=>{
+            window.history.back();
+        });
+        el['setting_button'].addEventListener("click", ()=>{
+            window.location.href = '/';
+        });
+
+        const loadData = ()=>{
+            displayIds.forEach(displayId=>{
+                el[displayId].innerHTML = urlParams[displayId];
+            })
+            const servingDisplays = document.getElementsByClassName(urlParams['serving']);
+            for(let servingDisplay of servingDisplays){
+                servingDisplay.style.background='red';
+            }
+            const A = [urlParams['A1'], urlParams['A2'], urlParams['A3']];
+            const B = [urlParams['B1'], urlParams['B2'], urlParams['B3']];
+            if(urlParams['serving']=='A'){
+                el['aServer'].innerHTML = A[urlParams['aServer']];
+                el['bServer'].innerHTML = B[urlParams['aScore']%3];
+                el['bServerLabel'].innerHTML = '接發'
+                el['aServerLabel'].innerHTML = '發球'
+                const aDisplay = document.getElementsByClassName('A').item(0);
+                const bDisplay = document.getElementsByClassName('B').item(0);
+                aDisplay.style.background='red';
+                bDisplay.style.background='';
+            }
+            else{
+                el['bServer'].innerHTML = B[urlParams['bServer']];
+                el['aServer'].innerHTML = A[urlParams['bScore']%3];
+                el['aServerLabel'].innerHTML = '接發'
+                el['bServerLabel'].innerHTML = '發球'
+                const aDisplay = document.getElementsByClassName('A').item(0);
+                const bDisplay = document.getElementsByClassName('B').item(0);
+                aDisplay.style.background='';
+                bDisplay.style.background='red';
+            }
+            
+        }
+
+        const gameEnd = ()=>{
+            const higherScore = Math.max(urlParams['aScore'], urlParams['bScore']);
+            const lowerScore = Math.min(urlParams['aScore'], urlParams['bScore']);
+            if(higherScore<urlParams['scoreTarget'])return false;
+            if(higherScore-lowerScore<2)return false;
+            return true;
+        }
+
+        el['aPlusButton'].addEventListener("click", ()=>{
+            if(gameEnd()){
+                alert('game ended');
+                return;
+            }
+            let state = {...urlParams};
+            state['aScore']+=1;
+            if(state['serving']=='B'){
+                state['aServer'] = (state['aServer']+1)%3;
+                state['serving']='A';
+            }
+            urlParams = {...state};
+            window.history.pushState(state, '', 'scoreboard?' + (new URLSearchParams(state).toString()))
+            loadData();
+        });
+        el['bPlusButton'].addEventListener("click", ()=>{
+            if(gameEnd()){
+                alert('game ended');
+                return;
+            }
+            let state = {...urlParams};
+            state['bScore']+=1;
+            if(state['serving']=='A'){
+                state['bServer'] = (state['bServer']+1)%3;
+                state['serving']='B';
+            }
+            urlParams = {...state};
+            window.history.pushState(state, '', 'scoreboard?' + (new URLSearchParams(state).toString()))
+            loadData();
+        });
+
+        // load data when first loaded
+        loadData();
+        window.onpopstate=(e)=>{
+            urlParams = e.state;
+            loadData();
+        }
+    </script>
+</body>
+</html>
