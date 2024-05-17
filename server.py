@@ -11,4 +11,4 @@ def scoreboard():
     return render_template('scoreboard.html')
 
 if __name__=='__main__':
-    app.run(debug=True)
+    app.run()
