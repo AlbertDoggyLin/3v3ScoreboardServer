@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from gevent import pywsgi
 
 app = Flask(__name__)
 
@@ -11,4 +12,7 @@ def scoreboard():
     return render_template('scoreboard.html')
 
 if __name__=='__main__':
-    app.run()
+    import sys
+    port = int(sys.argv[1]) if int(sys.argv[1]) else 5000
+    server = pywsgi.WSGIServer(('0.0.0.0', port), app)
+    server.serve_forever()
