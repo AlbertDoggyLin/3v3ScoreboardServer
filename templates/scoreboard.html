@@ -236,6 +236,7 @@
 
         // load data when first loaded
         loadData();
+        window.history.replaceState({...urlParams}, '', '')
         window.onpopstate=(e)=>{
             urlParams = e.state;
             loadData();

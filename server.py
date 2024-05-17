@@ -13,6 +13,9 @@ def scoreboard():
 
 if __name__=='__main__':
     import sys
-    port = int(sys.argv[1]) if int(sys.argv[1]) else 5000
+    try:
+        port = int(sys.argv[1])
+    except:
+        port = 5000
     server = pywsgi.WSGIServer(('0.0.0.0', port), app)
     server.serve_forever()
