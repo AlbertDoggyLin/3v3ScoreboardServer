@@ -165,7 +165,7 @@
             const deuce = el['deuce'].value;
             const scoreTarget = el['scoreTarget'].value;
             const aServer = serving=='A'?0:2;
-            const bServer = serving=='B'?2:0;
+            const bServer = serving=='B'?0:2;
             let params = {aScore: 0, bScore: 0, aServer, bServer, serving, deuce, scoreTarget};
             playerIds.forEach(playerId=>{
                 params[playerId]=el[playerId].value?el[playerId].value:playerId;
