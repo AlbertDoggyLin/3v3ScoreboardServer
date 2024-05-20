@@ -95,7 +95,7 @@
             <div class="game-setting">
                 <div>
                     <label for="scoreTarget">分數</label>
-                    <input type="number" id="scoreTarget" name="scoreTarget" min="1" value="25" style="width: 35px;">
+                    <input type="number" id="scoreTarget" name="scoreTarget" min="1" value="30" style="width: 35px;">
                 </div>
                 <div>
                     <label for="deuce">deuce</label>
@@ -105,7 +105,7 @@
             <div class="team-setting">
                 <div class="team">
                     <div class="label">
-                        <div>A隊</div>
+                        <input type="text" value="A隊" id="aName">
                         <div>
                             <input type="radio" id="aFirstServe" name="firstServe" value="A" checked />
                             <label for="aFirstServe">先發</label>
@@ -126,7 +126,7 @@
                 </div>
                 <div class="team">
                     <div class="label">
-                        <div>B隊</div>
+                        <input type="text" value="B隊" id="bName">
                         <div>
                             <input type="radio" id="bFirstServe" name="firstServe" value="B" />
                             <label for="bFirstServe">先發</label>
@@ -153,7 +153,11 @@
         </div>
     </div>
     <script>
-        const elementIds = ['start_button', 'clear_button', 'A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'aFirstServe', 'deuce', 'scoreTarget']
+        const elementIds = [
+            'start_button', 'clear_button', 
+            'A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'aName', 'bName',
+            'aFirstServe', 'deuce', 'scoreTarget'
+        ]
         const playerIds = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3']
         const el = {}
         elementIds.forEach(id=>{
@@ -164,9 +168,11 @@
             const serving = el['aFirstServe'].checked?'A':'B';
             const deuce = el['deuce'].value;
             const scoreTarget = el['scoreTarget'].value;
+            const aName = el['aName'].value;
+            const bName = el['bName'].value;
             const aServer = serving=='A'?0:2;
             const bServer = serving=='B'?0:2;
-            let params = {aScore: 0, bScore: 0, aServer, bServer, serving, deuce, scoreTarget};
+            let params = {aScore: 0, bScore: 0, aServer, bServer, aName, bName, reverse:false, serving, deuce, scoreTarget};
             playerIds.forEach(playerId=>{
                 params[playerId]=el[playerId].value?el[playerId].value:playerId;
             });

@@ -19,3 +19,4 @@ if __name__=='__main__':
         port = 5000
     server = pywsgi.WSGIServer(('0.0.0.0', port), app)
     server.serve_forever()
+    # app.run(debug=True)

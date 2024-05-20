@@ -17,7 +17,7 @@
             flex-direction: column;
             background-color: #296f56;
         }
-        .setter{
+        #setter{
             height: 80%;
             width: 100%;
             display: flex;
@@ -82,8 +82,13 @@
         .bottom{
             width: 100%;
             height: 20%;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 15px;
+            box-sizing: border-box;
             overflow: auto;
+            gap: 5px;
         }
         .bottom>div{
             display: flex;
@@ -92,15 +97,14 @@
             justify-content: center;
             align-items: center;
             gap: 5px;
-            margin: 3px;
         }
     </style>
 </head>
 <body>
     <div class="wrapper">
-        <div class="setter">
+        <div id="setter">
             <div class="team">
-                <div class="label"><div>A隊</div></div>
+                <div class="label"><div id="aName">A隊</div></div>
                 <div class="score">
                     <div class="label">分數</div>
                     <div class="display A" id="aPlusButton">
@@ -113,7 +117,7 @@
                 </div>
             </div>
             <div class="team">
-                <div class="label"><div>B隊</div></div>
+                <div class="label"><div id="bName">B隊</div></div>
                 <div class="score">
                     <div class="label">分數</div>
                     <div class="display B" id="bPlusButton">
@@ -129,6 +133,7 @@
         <div class="bottom">
             <div>
                 <button id="back_button">上一步</button>
+                <button id="reverse_button">換場</button>
                 <button id="setting_button">回到設定</button>
             </div>
             <div>點按分數加分</div>
@@ -138,7 +143,7 @@
         // initialize url params first loaded
         const queryString = window.location.search;
         const numberParams = ['aScore', 'bScore', 'aServer', 'bServer', 'scoreTarget']
-        const booleanParams = ['deuce']
+        const booleanParams = ['deuce', 'reverse']
         let urlParams = {};
         new URLSearchParams(queryString).forEach((val, key)=>{ urlParams[key]=val; })
         numberParams.forEach(numberParam=>{ urlParams[numberParam] = Number(urlParams[numberParam]); })
@@ -146,11 +151,11 @@
 
         // load elements and setup button first loaded
         const elementIds = [
-            'back_button', 'setting_button', 'aPlusButton', 'bPlusButton', 
-            'aScore', 'bScore', 'aServer', 'bServer',
+            'back_button', 'setting_button', 'aPlusButton', 'bPlusButton', 'reverse_button',
+            'aScore', 'bScore', 'aServer', 'bServer', 'aName', 'bName', 'setter',
             'aServerLabel', 'bServerLabel'
         ];
-        const displayIds = ['aScore', 'bScore']
+        const displayIds = ['aScore', 'bScore', 'aName', 'bName']
         const el = {}
         elementIds.forEach(id=>{
             el[id]=document.getElementById(id);
@@ -170,11 +175,12 @@
             for(let servingDisplay of servingDisplays){
                 servingDisplay.style.background='red';
             }
+            el['setter'].style.flexDirection = `row${urlParams['reverse']?'-reverse':''}`
             const A = [urlParams['A1'], urlParams['A2'], urlParams['A3']];
             const B = [urlParams['B1'], urlParams['B2'], urlParams['B3']];
             if(urlParams['serving']=='A'){
                 el['aServer'].innerHTML = A[urlParams['aServer']];
-                el['bServer'].innerHTML = B[urlParams['aScore']%3];
+                el['bServer'].innerHTML = B[(urlParams['aScore']+2)%3];
                 el['bServerLabel'].innerHTML = '接發'
                 el['aServerLabel'].innerHTML = '發球'
                 const aDisplay = document.getElementsByClassName('A').item(0);
@@ -184,7 +190,7 @@
             }
             else{
                 el['bServer'].innerHTML = B[urlParams['bServer']];
-                el['aServer'].innerHTML = A[urlParams['bScore']%3];
+                el['aServer'].innerHTML = A[(urlParams['bScore']+2)%3];
                 el['aServerLabel'].innerHTML = '接發'
                 el['bServerLabel'].innerHTML = '發球'
                 const aDisplay = document.getElementsByClassName('A').item(0);
@@ -192,7 +198,6 @@
                 aDisplay.style.background='';
                 bDisplay.style.background='red';
             }
-            
         }
 
         const gameEnd = ()=>{
@@ -203,6 +208,13 @@
             return true;
         }
 
+        el['reverse_button'].addEventListener("click", ()=>{
+            let state = {...urlParams};
+            state['reverse'] = !state['reverse'];
+            urlParams = {...state};
+            window.history.pushState(state, '', 'scoreboard?' + (new URLSearchParams(state).toString()))
+            loadData();
+        });
         el['aPlusButton'].addEventListener("click", ()=>{
             if(gameEnd()){
                 alert('game ended');
