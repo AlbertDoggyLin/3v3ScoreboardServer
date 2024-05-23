@@ -12,11 +12,11 @@ def scoreboard():
     return render_template('scoreboard.html')
 
 if __name__=='__main__':
-    import sys
-    try:
-        port = int(sys.argv[1])
-    except:
-        port = 5000
-    server = pywsgi.WSGIServer(('0.0.0.0', port), app)
-    server.serve_forever()
-    # app.run(debug=True)
+    # import sys
+    # try:
+    #     port = int(sys.argv[1])
+    # except:
+    #     port = 5000
+    # server = pywsgi.WSGIServer(('0.0.0.0', port), app)
+    # server.serve_forever()
+    app.run(debug=True)

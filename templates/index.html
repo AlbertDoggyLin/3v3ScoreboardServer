@@ -166,13 +166,13 @@
         el['start_button'].addEventListener("click", ()=>{
             const path = '/scoreboard?';
             const serving = el['aFirstServe'].checked?'A':'B';
-            const deuce = el['deuce'].value;
+            const deuce = el['deuce'].checked?1:0;
             const scoreTarget = el['scoreTarget'].value;
             const aName = el['aName'].value;
             const bName = el['bName'].value;
             const aServer = serving=='A'?0:2;
             const bServer = serving=='B'?0:2;
-            let params = {aScore: 0, bScore: 0, aServer, bServer, aName, bName, reverse:false, serving, deuce, scoreTarget};
+            let params = {aScore: 0, bScore: 0, aServer, bServer, aName, bName, reverse:0, serving, deuce, scoreTarget};
             playerIds.forEach(playerId=>{
                 params[playerId]=el[playerId].value?el[playerId].value:playerId;
             });

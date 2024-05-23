@@ -142,13 +142,12 @@
     <script>
         // initialize url params first loaded
         const queryString = window.location.search;
-        const numberParams = ['aScore', 'bScore', 'aServer', 'bServer', 'scoreTarget']
-        const booleanParams = ['deuce', 'reverse']
+        const numberParams = ['aScore', 'bScore', 'aServer', 'bServer', 'scoreTarget', 'deuce', 'reverse']
+        const booleanParams = []
         let urlParams = {};
         new URLSearchParams(queryString).forEach((val, key)=>{ urlParams[key]=val; })
         numberParams.forEach(numberParam=>{ urlParams[numberParam] = Number(urlParams[numberParam]); })
         booleanParams.forEach(booleanParam=>{ urlParams[booleanParam] = Boolean(urlParams[booleanParam]); })
-
         // load elements and setup button first loaded
         const elementIds = [
             'back_button', 'setting_button', 'aPlusButton', 'bPlusButton', 'reverse_button',
@@ -210,7 +209,7 @@
 
         el['reverse_button'].addEventListener("click", ()=>{
             let state = {...urlParams};
-            state['reverse'] = !state['reverse'];
+            state['reverse'] = state['reverse']?0:1;
             urlParams = {...state};
             window.history.pushState(state, '', 'scoreboard?' + (new URLSearchParams(state).toString()))
             loadData();
