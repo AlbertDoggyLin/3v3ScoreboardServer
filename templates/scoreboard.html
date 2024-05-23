@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3v3記分板</title>
     <style>
-        body{
-            margin:0;
+        body {
+            margin: 0;
             color: white;
         }
-        .wrapper{
+
+        .wrapper {
             width: 100svw;
             height: 100svh;
             background-color: black;
@@ -17,7 +19,8 @@
             flex-direction: column;
             background-color: #296f56;
         }
-        #setter{
+
+        #setter {
             height: 80%;
             width: 100%;
             display: flex;
@@ -26,7 +29,8 @@
             gap: 20px;
             overflow: auto;
         }
-        .team{
+
+        .team {
             height: 100%;
             width: 100%;
             display: flex;
@@ -34,7 +38,8 @@
             justify-content: space-between;
             gap: 5px;
         }
-        .label{
+
+        .label {
             width: 100%;
             height: max-content;
             font-size: large;
@@ -44,7 +49,8 @@
             gap: 5px;
             background-color: #1d8a90;
         }
-        .score{
+
+        .score {
             width: 100%;
             height: 100%;
             display: flex;
@@ -52,18 +58,21 @@
             justify-content: space-between;
             gap: 5px;
         }
-        .server{
+
+        .server {
             width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             gap: 5px;
         }
-        .score>.label{
+
+        .score>.label {
             font-size: medium;
             background-color: black;
         }
-        .display{
+
+        .display {
             box-sizing: border-box;
             font-size: medium;
             height: 100%;
@@ -75,11 +84,11 @@
             font-size: 5vh;
         }
 
-        .display>div{
+        .display>div {
             font-size: 20vh;
         }
-        
-        .bottom{
+
+        .bottom {
             width: 100%;
             height: 20%;
             display: flex;
@@ -90,7 +99,8 @@
             overflow: auto;
             gap: 5px;
         }
-        .bottom>div{
+
+        .bottom>div {
             display: flex;
             width: 100%;
             flex-direction: row;
@@ -100,11 +110,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div id="setter">
             <div class="team">
-                <div class="label"><div id="aName">A隊</div></div>
+                <div class="label">
+                    <div id="aName">A隊</div>
+                </div>
                 <div class="score">
                     <div class="label">分數</div>
                     <div class="display A" id="aPlusButton">
@@ -117,7 +130,9 @@
                 </div>
             </div>
             <div class="team">
-                <div class="label"><div id="bName">B隊</div></div>
+                <div class="label">
+                    <div id="bName">B隊</div>
+                </div>
                 <div class="score">
                     <div class="label">分數</div>
                     <div class="display B" id="bPlusButton">
@@ -145,9 +160,9 @@
         const numberParams = ['aScore', 'bScore', 'aServer', 'bServer', 'scoreTarget', 'deuce', 'reverse']
         const booleanParams = []
         let urlParams = {};
-        new URLSearchParams(queryString).forEach((val, key)=>{ urlParams[key]=val; })
-        numberParams.forEach(numberParam=>{ urlParams[numberParam] = Number(urlParams[numberParam]); })
-        booleanParams.forEach(booleanParam=>{ urlParams[booleanParam] = Boolean(urlParams[booleanParam]); })
+        new URLSearchParams(queryString).forEach((val, key) => { urlParams[key] = val; })
+        numberParams.forEach(numberParam => { urlParams[numberParam] = Number(urlParams[numberParam]); })
+        booleanParams.forEach(booleanParam => { urlParams[booleanParam] = Boolean(urlParams[booleanParam]); })
         // load elements and setup button first loaded
         const elementIds = [
             'back_button', 'setting_button', 'aPlusButton', 'bPlusButton', 'reverse_button',
@@ -156,102 +171,103 @@
         ];
         const displayIds = ['aScore', 'bScore', 'aName', 'bName']
         const el = {}
-        elementIds.forEach(id=>{
-            el[id]=document.getElementById(id);
+        elementIds.forEach(id => {
+            el[id] = document.getElementById(id);
         })
-        el['back_button'].addEventListener("click", ()=>{
+        el['back_button'].addEventListener("click", () => {
             window.history.back();
         });
-        el['setting_button'].addEventListener("click", ()=>{
+        el['setting_button'].addEventListener("click", () => {
             window.location.href = '/';
         });
 
-        const loadData = ()=>{
-            displayIds.forEach(displayId=>{
+        const loadData = () => {
+            displayIds.forEach(displayId => {
                 el[displayId].innerHTML = urlParams[displayId];
             })
             const servingDisplays = document.getElementsByClassName(urlParams['serving']);
-            for(let servingDisplay of servingDisplays){
-                servingDisplay.style.background='red';
+            for (let servingDisplay of servingDisplays) {
+                servingDisplay.style.background = 'red';
             }
-            el['setter'].style.flexDirection = `row${urlParams['reverse']?'-reverse':''}`
+            el['setter'].style.flexDirection = `row${urlParams['reverse'] ? '-reverse' : ''}`
             const A = [urlParams['A1'], urlParams['A2'], urlParams['A3']];
             const B = [urlParams['B1'], urlParams['B2'], urlParams['B3']];
-            if(urlParams['serving']=='A'){
+            if (urlParams['serving'] == 'A') {
                 el['aServer'].innerHTML = A[urlParams['aServer']];
-                el['bServer'].innerHTML = B[(urlParams['aScore']+2)%3];
+                el['bServer'].innerHTML = B[(urlParams['aScore'] + 2) % 3];
                 el['bServerLabel'].innerHTML = '接發'
                 el['aServerLabel'].innerHTML = '發球'
                 const aDisplay = document.getElementsByClassName('A').item(0);
                 const bDisplay = document.getElementsByClassName('B').item(0);
-                aDisplay.style.background='red';
-                bDisplay.style.background='';
+                aDisplay.style.background = 'red';
+                bDisplay.style.background = '';
             }
-            else{
+            else {
                 el['bServer'].innerHTML = B[urlParams['bServer']];
-                el['aServer'].innerHTML = A[(urlParams['bScore']+2)%3];
+                el['aServer'].innerHTML = A[(urlParams['bScore'] + 2) % 3];
                 el['aServerLabel'].innerHTML = '接發'
                 el['bServerLabel'].innerHTML = '發球'
                 const aDisplay = document.getElementsByClassName('A').item(0);
                 const bDisplay = document.getElementsByClassName('B').item(0);
-                aDisplay.style.background='';
-                bDisplay.style.background='red';
+                aDisplay.style.background = '';
+                bDisplay.style.background = 'red';
             }
         }
 
-        const gameEnd = ()=>{
+        const gameEnd = () => {
             const higherScore = Math.max(urlParams['aScore'], urlParams['bScore']);
             const lowerScore = Math.min(urlParams['aScore'], urlParams['bScore']);
-            if(higherScore<urlParams['scoreTarget'])return false;
-            if(higherScore-lowerScore<2)return false;
+            if (higherScore < urlParams['scoreTarget']) return false;
+            if (higherScore - lowerScore < 2) return false;
             return true;
         }
 
-        el['reverse_button'].addEventListener("click", ()=>{
-            let state = {...urlParams};
-            state['reverse'] = state['reverse']?0:1;
-            urlParams = {...state};
+        el['reverse_button'].addEventListener("click", () => {
+            let state = { ...urlParams };
+            state['reverse'] = state['reverse'] ? 0 : 1;
+            urlParams = { ...state };
             window.history.pushState(state, '', 'scoreboard?' + (new URLSearchParams(state).toString()))
             loadData();
         });
-        el['aPlusButton'].addEventListener("click", ()=>{
-            if(gameEnd()){
+        el['aPlusButton'].addEventListener("click", () => {
+            if (gameEnd()) {
                 alert('game ended');
                 return;
             }
-            let state = {...urlParams};
-            state['aScore']+=1;
-            if(state['serving']=='B'){
-                state['aServer'] = (state['aServer']+1)%3;
-                state['serving']='A';
+            let state = { ...urlParams };
+            state['aScore'] += 1;
+            if (state['serving'] == 'B') {
+                state['aServer'] = (state['aServer'] + 1) % 3;
+                state['serving'] = 'A';
             }
-            urlParams = {...state};
+            urlParams = { ...state };
             window.history.pushState(state, '', 'scoreboard?' + (new URLSearchParams(state).toString()))
             loadData();
         });
-        el['bPlusButton'].addEventListener("click", ()=>{
-            if(gameEnd()){
+        el['bPlusButton'].addEventListener("click", () => {
+            if (gameEnd()) {
                 alert('game ended');
                 return;
             }
-            let state = {...urlParams};
-            state['bScore']+=1;
-            if(state['serving']=='A'){
-                state['bServer'] = (state['bServer']+1)%3;
-                state['serving']='B';
+            let state = { ...urlParams };
+            state['bScore'] += 1;
+            if (state['serving'] == 'A') {
+                state['bServer'] = (state['bServer'] + 1) % 3;
+                state['serving'] = 'B';
             }
-            urlParams = {...state};
+            urlParams = { ...state };
             window.history.pushState(state, '', 'scoreboard?' + (new URLSearchParams(state).toString()))
             loadData();
         });
 
         // load data when first loaded
         loadData();
-        window.history.replaceState({...urlParams}, '', '')
-        window.onpopstate=(e)=>{
+        window.history.replaceState({ ...urlParams }, '', '')
+        window.onpopstate = (e) => {
             urlParams = e.state;
             loadData();
         }
     </script>
 </body>
+
 </html>

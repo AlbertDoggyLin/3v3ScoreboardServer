@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3v3記分板設定頁面</title>
     <style>
-        body{
-            margin:0;
+        body {
+            margin: 0;
             color: white;
         }
-        .wrapper{
+
+        .wrapper {
             width: 100svw;
             height: 100svh;
             background-color: black;
@@ -18,7 +20,8 @@
             overflow: hidden;
             background-color: #296f56;
         }
-        .setting{
+
+        .setting {
             height: 80%;
             width: 100%;
             display: flex;
@@ -27,7 +30,8 @@
             overflow: auto;
             gap: 10px;
         }
-        .game-setting{
+
+        .game-setting {
             width: 100%;
             height: 20%;
             display: flex;
@@ -35,7 +39,8 @@
             align-items: center;
             gap: 25px;
         }
-        .team-setting{
+
+        .team-setting {
             height: 100%;
             width: 100%;
             display: flex;
@@ -43,7 +48,8 @@
             flex-direction: row;
             gap: 20px;
         }
-        .team{
+
+        .team {
             height: 100%;
             width: 100%;
             display: flex;
@@ -51,7 +57,8 @@
             justify-content: space-between;
             gap: 5px;
         }
-        .label{
+
+        .label {
             width: 100%;
             height: max-content;
             font-size: large;
@@ -61,7 +68,8 @@
             gap: 5px;
             background-color: #1d8a90;
         }
-        .player{
+
+        .player {
             width: 100%;
             height: 100%;
             display: flex;
@@ -69,17 +77,20 @@
             justify-content: space-between;
             gap: 5px;
         }
-        .player>.label{
+
+        .player>.label {
             font-size: medium;
             background-color: black;
         }
-        textarea{
+
+        textarea {
             box-sizing: border-box;
             font-size: medium;
             height: 100%;
             width: 100%;
         }
-        .bottom{
+
+        .bottom {
             width: 100%;
             height: 20%;
             display: flex;
@@ -89,6 +100,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <div class="setting">
@@ -154,35 +166,36 @@
     </div>
     <script>
         const elementIds = [
-            'start_button', 'clear_button', 
+            'start_button', 'clear_button',
             'A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'aName', 'bName',
             'aFirstServe', 'deuce', 'scoreTarget'
         ]
         const playerIds = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3']
         const el = {}
-        elementIds.forEach(id=>{
-            el[id]=document.getElementById(id);
+        elementIds.forEach(id => {
+            el[id] = document.getElementById(id);
         })
-        el['start_button'].addEventListener("click", ()=>{
+        el['start_button'].addEventListener("click", () => {
             const path = '/scoreboard?';
-            const serving = el['aFirstServe'].checked?'A':'B';
-            const deuce = el['deuce'].checked?1:0;
+            const serving = el['aFirstServe'].checked ? 'A' : 'B';
+            const deuce = el['deuce'].checked ? 1 : 0;
             const scoreTarget = el['scoreTarget'].value;
             const aName = el['aName'].value;
             const bName = el['bName'].value;
-            const aServer = serving=='A'?0:2;
-            const bServer = serving=='B'?0:2;
-            let params = {aScore: 0, bScore: 0, aServer, bServer, aName, bName, reverse:0, serving, deuce, scoreTarget};
-            playerIds.forEach(playerId=>{
-                params[playerId]=el[playerId].value?el[playerId].value:playerId;
+            const aServer = serving == 'A' ? 0 : 2;
+            const bServer = serving == 'B' ? 0 : 2;
+            let params = { aScore: 0, bScore: 0, aServer, bServer, aName, bName, reverse: 0, serving, deuce, scoreTarget };
+            playerIds.forEach(playerId => {
+                params[playerId] = el[playerId].value ? el[playerId].value : playerId;
             });
-            window.location.href = path+(new URLSearchParams(params)).toString();
+            window.location.href = path + (new URLSearchParams(params)).toString();
         });
-        el['clear_button'].addEventListener("click", ()=>{
-            playerIds.forEach(playerId=>{
+        el['clear_button'].addEventListener("click", () => {
+            playerIds.forEach(playerId => {
                 el[playerId].value = playerId;
             })
         });
     </script>
 </body>
+
 </html>
